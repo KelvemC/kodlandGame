@@ -79,3 +79,26 @@ class Human(Actor):
             sounds.jump.play()
             self.on_ground = False
 
+class Zombie(Actor):
+    def __init__(self, start_x, start_y, patrol_range):
+        super().__init__('zombie_walk1')
+        self.pos = (start_x, start_y)
+        self.velocity_x = 2  # Velocidade inicial
+        self.patrol_start = start_x - patrol_range / 2
+        self.patrol_end = start_x + patrol_range / 2
+        self.animation_frame = 0
+        self.animation_speed = 0.08
+        self.walk_images = ['zombie_walk1', 'zombie_walk2']
+    
+    def update_movement(self):
+        self.x += self.velocity_x
+        if self.x <= self.patrol_start or self.x >= self.patrol_end:
+            self.velocity_x = -self.velocity_x
+
+    def animate(self):
+        self.animation_frame += self.animation_speed
+        if abs(self.velocity_x) > 0:
+            frame = math.floor(self.animation_frame) % len(self.walk_images)
+            self.image = self.walk_images[frame]
+        else:
+            self.image = self.idle_images[0]
